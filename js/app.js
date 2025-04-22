@@ -405,8 +405,27 @@ const pageContents = {
                 </div>
             </div>
         </div>
+    `,
+
+    // AI聊天页面 - 结构保持不变，但初始消息会由 history 控制
+    ai: `
+        <div class="chat-container">
+            <div class="chat-messages" id="chat-messages">
+                <!-- 聊天消息将通过 chatHistory 动态加载 -->
+            </div>
+            <div class="chat-input-area">
+                <textarea id="chat-input" placeholder="输入您的问题..." rows="1"></textarea>
+                <button id="send-button">发送</button>
+            </div>
+        </div>
     `
 };
+
+// --- 用于存储聊天记录的数组 ---
+let chatHistory = [
+    // 初始欢迎消息
+    { text: "您好！我是您的AI健康反馈，有什么可以帮您的吗？", classes: ['ai-message'] }
+];
 
 // 为页面导航添加CSS样式
 document.head.insertAdjacentHTML('beforeend', `
@@ -778,14 +797,149 @@ document.addEventListener('DOMContentLoaded', () => {
 // 显示指定页面
 function showPage(pageName) {
     // 更新页面内容
-    document.getElementById('content').innerHTML = pageContents[pageName];
+    const contentArea = document.getElementById('content');
+    contentArea.innerHTML = pageContents[pageName];
     
     // 更新活跃的导航项
     document.querySelectorAll('.nav-item').forEach(item => {
-        if (item.getAttribute('data-page') === pageName) {
-            item.classList.add('active');
-        } else {
-            item.classList.remove('active');
-        }
+        item.classList.toggle('active', item.getAttribute('data-page') === pageName);
     });
-} 
+    
+    // 如果是AI页面，则初始化聊天功能
+    if (pageName === 'ai') {
+        initChat();
+    }
+}
+
+// 初始化聊天功能
+function initChat() {
+    const sendButton = document.getElementById('send-button');
+    const chatInput = document.getElementById('chat-input');
+    const chatMessagesContainer = document.getElementById('chat-messages');
+
+    if (!chatMessagesContainer) return; // 安全检查
+
+    // 1. 清空当前显示的消息
+    chatMessagesContainer.innerHTML = '';
+
+    // 2. 从 chatHistory 重建消息列表
+    chatHistory.forEach(message => {
+        // 直接调用内部的添加逻辑，避免重复添加历史记录
+        appendMessageToDOM(message.text, message.classes);
+    });
+     // 滚动到底部
+     chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+
+    // 3. 添加事件监听器 (只添加一次)
+    // 为确保不重复添加监听器，可以先移除旧的 (如果存在)
+    // (简单起见，这里假设 initChat 只在切换到 AI 页面时调用一次有效实例)
+    if (!sendButton.hasAttribute('data-listener-added')) {
+        chatInput.addEventListener('input', () => {
+            chatInput.style.height = 'auto';
+            chatInput.style.height = (chatInput.scrollHeight) + 'px';
+        });
+
+        const sendMessageHandler = () => {
+            const messageText = chatInput.value.trim();
+            if (messageText) {
+                // 调用 appendMessage 来显示并存储历史记录
+                appendMessage(messageText, 'user-message');
+                chatInput.value = '';
+                chatInput.style.height = 'auto';
+                callBackendAPI(messageText);
+            }
+        };
+
+        sendButton.addEventListener('click', sendMessageHandler);
+        sendButton.setAttribute('data-listener-added', 'true'); // 标记已添加
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessageHandler();
+            }
+        });
+    }
+}
+
+// 将消息添加到聊天窗口的 DOM 中 (内部函数，不修改 history)
+function appendMessageToDOM(text, classList) {
+    const chatMessages = document.getElementById('chat-messages');
+    if (!chatMessages) return;
+    const messageDiv = document.createElement('div');
+    // 确保 classList 是数组
+    const classesToAdd = Array.isArray(classList) ? classList : [classList];
+    messageDiv.classList.add('message', ...classesToAdd);
+    messageDiv.textContent = text;
+    chatMessages.appendChild(messageDiv);
+     // 滚动到底部 (每次添加后都滚动)
+     chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// 更新后的 appendMessage：添加到 DOM 并更新 history
+function appendMessage(text, ...classes) {
+    // 1. 添加到 DOM
+    appendMessageToDOM(text, classes);
+
+    // 2. 添加到历史记录
+    // 过滤掉可能的 'thinking' 类，因为它只是临时状态
+    const finalClasses = classes.filter(cls => cls !== 'thinking');
+    chatHistory.push({ text: text, classes: finalClasses });
+
+    // 可选：如果担心历史记录过长，可以在此添加限制逻辑
+    // if (chatHistory.length > MAX_HISTORY_LENGTH) { ... }
+}
+
+// 更新后的 callBackendAPI：使用新的 appendMessage 添加 AI 回复
+async function callBackendAPI(userMessage) {
+    // 显示加载提示 (仅添加到 DOM，不存入 history)
+    appendMessageToDOM("AI思考中...", ['ai-message', 'thinking']);
+
+    try {
+        const response = await fetch('http://localhost:5000/api/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: userMessage })
+        });
+
+        // 移除加载提示
+        const thinkingMessage = document.querySelector('#chat-messages .thinking'); // 更精确的选择器
+        if (thinkingMessage) thinkingMessage.remove();
+
+        if (!response.ok) {
+            let errorData;
+            try {
+                errorData = await response.json();
+            } catch (e) {
+                errorData = { error: `请求失败 (状态码: ${response.status})` };
+            }
+            throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.reply) {
+            // 使用 appendMessage 添加 AI 回复到 DOM 和 history
+            appendMessage(data.reply, 'ai-message');
+        } else if (data.error) {
+            // 错误消息也添加到 DOM 和 history
+             appendMessage(`错误: ${data.error}`, 'ai-message', 'error-message'); // 可选：添加错误样式
+        } else {
+            appendMessage('收到了无法解析的回复', 'ai-message');
+        }
+
+    } catch (error) {
+        console.error('Error calling backend API:', error);
+        const thinkingMessage = document.querySelector('#chat-messages .thinking');
+        if (thinkingMessage) thinkingMessage.remove();
+        // 错误消息添加到 DOM 和 history
+        appendMessage(`抱歉，连接AI服务时出错: ${error.message}`, 'ai-message', 'error-message'); // 可选：添加错误样式
+    }
+}
+
+/*
+// --- (注释掉之前的模拟代码) ---
+// function simulateAIResponse(userMessage) { ... }
+*/

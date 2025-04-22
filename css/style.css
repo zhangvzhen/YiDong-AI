@@ -42,7 +42,7 @@ main {
     flex: 1;
     padding: 15px;
     overflow-y: auto;
-    padding-bottom: 70px;
+    padding-bottom: 85px;
 }
 
 /* 底部导航 */
@@ -54,7 +54,8 @@ main {
     bottom: 0;
     width: 100%;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-    padding: 10px 0;
+    padding: 5px 0;
+    height: 60px;
 }
 
 .nav-item {
@@ -73,6 +74,46 @@ main {
 
 .nav-item.active {
     color: #3dc295;
+}
+
+/* 突出显示 AI 导航项 - 新样式：仿照图片 */
+.nav-item-ai {
+    width: 60px; /* 较大的固定宽度 */
+    height: 60px; /* 较大的固定高度 */
+    background-color: #3dc295; /* 主题绿色背景 */
+    border-radius: 50%; /* 圆形 */
+    position: relative; /* 为了调整位置 */
+    bottom: 15px; /* 向上突出 */
+    display: flex; /* 使用 flex 居中图标 */
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.1); /* 添加轻微阴影增加立体感 */
+    /* 覆盖或重置继承的样式 */
+    padding: 0;
+    margin: 0; 
+    transform: none; /* 移除之前的缩放 */
+}
+
+.nav-item-ai i {
+    font-size: 28px; /* 调整图标大小 */
+    color: white; /* 白色图标 */
+    /* 移除之前的圆环和padding */
+    border: none;
+    padding: 0;
+    width: auto;
+    height: auto;
+    margin-bottom: 0; /* 重置间距 */
+}
+
+/* 隐藏AI按钮下的文字 */
+.nav-item-ai span {
+   display: none;
+}
+
+
+/* 调整普通导航项的位置，避免与突出按钮重叠 */
+.nav-item:not(.nav-item-ai) {
+    margin-top: 5px; /* 将其他按钮稍微向下移动一点 */
 }
 
 /* 搜索框 */
@@ -307,4 +348,73 @@ main {
         width: 70px;
         height: 70px;
     }
+}
+
+/* --- AI聊天界面样式 --- */
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 150px); /* 调整高度以适应头部和导航栏 */
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.message {
+    padding: 10px 15px;
+    border-radius: 18px;
+    max-width: 80%;
+    line-height: 1.4;
+}
+
+.user-message {
+    background-color: #e8f7f1;
+    color: #333;
+    align-self: flex-end;
+    border-bottom-right-radius: 5px;
+}
+
+.ai-message {
+    background-color: #f0f0f0;
+    color: #333;
+    align-self: flex-start;
+    border-bottom-left-radius: 5px;
+}
+
+.chat-input-area {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #eee;
+}
+
+.chat-input-area textarea {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    resize: none;
+    min-height: 40px; /* 调整最小高度 */
+    max-height: 100px; /* 限制最大高度 */
+    margin-right: 10px;
+    font-size: 14px;
+}
+
+.chat-input-area button {
+    background-color: #3dc295;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 0 20px;
+    cursor: pointer;
+    font-size: 14px;
 } 
