@@ -1,431 +1,313 @@
-// 页面内容定义
-const pageContents = {
-    // 首页内容 - 运动视频推荐
-    home: `
-        <div class="search-container">
-            <i class="fas fa-search search-icon-input"></i>
-            <input type="text" class="search-input" placeholder="搜索光波音色锻炼...">
-            <button class="search-button">健康进步</button>
-        </div>
+// --- 登录和健康问卷相关变量 ---
+let currentStep = 1;
+let countdownTimer = null;
+let userHealthData = {};
 
-        <div class="theme-card">
-            <div class="theme-info">
-                <div class="theme-title">社区功程<br>(太极运动家庭展)</div>
-                <div class="theme-desc">适合初学者的太极</div>
-                <button class="theme-button">创新场景</button>
-            </div>
-            <div class="secondary-button">查询心得</div>
-            <img src="https://picsum.photos/100/100" alt="太极" class="theme-image">
-        </div>
+// --- 登录界面功能 ---
+function initLogin() {
+    const loginBtn = document.getElementById('login-btn');
+    const sendCodeBtn = document.getElementById('send-code-btn');
+    const loginPhone = document.getElementById('login-phone');
+    const loginCode = document.getElementById('login-code');
 
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">个性化运动推荐</div>
-                <div class="card-more">查看更多 ></div>
-            </div>
-            <div class="feature-grid">
-                <div class="feature-item">
-                    <div class="feature-icon feature-icon-1">
-                        <i class="fas fa-running"></i>
-                    </div>
-                    <div class="feature-name">高强度</div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon feature-icon-2">
-                        <i class="fas fa-baby"></i>
-                    </div>
-                    <div class="feature-name">太极养生</div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon feature-icon-3">
-                        <i class="fas fa-utensils"></i>
-                    </div>
-                    <div class="feature-name">食为天</div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon feature-icon-4">
-                        <i class="fas fa-dumbbell"></i>
-                    </div>
-                    <div class="feature-name">指导教程</div>
-                </div>
-            </div>
-        </div>
+    // 发送验证码
+    sendCodeBtn.addEventListener('click', function() {
+        const phone = loginPhone.value.trim();
+        if (!validatePhone(phone)) {
+            showToast('请输入正确的手机号码');
+            return;
+        }
+        
+        // 开始倒计时
+        startCountdown(sendCodeBtn);
+        showToast('验证码已发送');
+    });
 
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">推荐视频</div>
-                <div class="card-more">更多 ></div>
-            </div>
-            <div class="video-list">
-                <div class="video-item">
-                    <div class="video-thumbnail">
-                        <i class="fas fa-play-circle fa-2x"></i>
-                    </div>
-                    <div class="video-info">
-                        <div class="video-title">太极拳入门教学 - 第一集</div>
-                        <div class="video-meta">
-                            <i class="fas fa-eye"></i> 1.2万次播放
-                        </div>
-                    </div>
-                </div>
-                <div class="video-item">
-                    <div class="video-thumbnail">
-                        <i class="fas fa-play-circle fa-2x"></i>
-                    </div>
-                    <div class="video-info">
-                        <div class="video-title">适合中老年人的八段锦</div>
-                        <div class="video-meta">
-                            <i class="fas fa-eye"></i> 8.5千次播放
-                        </div>
-                    </div>
-                </div>
-                <div class="video-item">
-                    <div class="video-thumbnail">
-                        <i class="fas fa-play-circle fa-2x"></i>
-                    </div>
-                    <div class="video-info">
-                        <div class="video-title">每日五分钟颈椎保健操</div>
-                        <div class="video-meta">
-                            <i class="fas fa-eye"></i> 5.3千次播放
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `,
+    // 登录按钮
+    loginBtn.addEventListener('click', function() {
+        const phone = loginPhone.value.trim();
+        const code = loginCode.value.trim();
+        
+        if (!validatePhone(phone)) {
+            showToast('请输入正确的手机号码');
+            return;
+        }
+        
+        if (!validateCode(code)) {
+            showToast('请输入6位验证码');
+            return;
+        }
+        
+        // 模拟登录成功
+        showToast('登录成功');
+        setTimeout(() => {
+            hideLogin();
+            showSurvey();
+        }, 1000);
+    });
 
-    // 计划页面 - 日程和饮食安排
-    plan: `
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">智能选择适宜强度</div>
-                <div class="card-more">左右滑动调整 ></div>
-            </div>
+    // 输入框回车事件
+    loginPhone.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendCodeBtn.click();
+        }
+    });
+    
+    loginCode.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            loginBtn.click();
+        }
+    });
+}
+
+// 验证手机号
+function validatePhone(phone) {
+    return /^1[3-9]\d{9}$/.test(phone);
+}
+
+// 验证验证码
+function validateCode(code) {
+    return /^\d{6}$/.test(code);
+}
+
+// 开始倒计时
+function startCountdown(button) {
+    let countdown = 60;
+    button.disabled = true;
+    button.textContent = `${countdown}秒后重发`;
+    
+    countdownTimer = setInterval(() => {
+        countdown--;
+        button.textContent = `${countdown}秒后重发`;
+        
+        if (countdown <= 0) {
+            clearInterval(countdownTimer);
+            button.disabled = false;
+            button.textContent = '获取验证码';
+        }
+    }, 1000);
+}
+
+// 隐藏登录界面
+function hideLogin() {
+    const loginOverlay = document.getElementById('login-overlay');
+    loginOverlay.classList.remove('active');
+}
+
+// 显示健康问卷
+function showSurvey() {
+    const surveyOverlay = document.getElementById('survey-overlay');
+    surveyOverlay.classList.add('active');
+    initSurvey();
+}
+
+// --- 健康问卷功能 ---
+function initSurvey() {
+    const nextBtn = document.getElementById('next-btn');
+    const prevBtn = document.getElementById('prev-btn');
+    const submitBtn = document.getElementById('submit-survey-btn');
+
+    nextBtn.addEventListener('click', nextStep);
+    prevBtn.addEventListener('click', prevStep);
+    submitBtn.addEventListener('click', submitSurvey);
+
+    // 初始化第一步
+    updateStepDisplay();
+}
+
+// 下一步
+function nextStep() {
+    if (validateCurrentStep()) {
+        if (currentStep < 3) {
+            currentStep++;
+            updateStepDisplay();
+        }
+    }
+}
+
+// 上一步
+function prevStep() {
+    if (currentStep > 1) {
+        currentStep--;
+        updateStepDisplay();
+    }
+}
+
+// 验证当前步骤
+function validateCurrentStep() {
+    switch (currentStep) {
+        case 1:
+            const age = document.getElementById('age').value;
+            const gender = document.querySelector('input[name="gender"]:checked');
             
-            <div class="progress-container">
-                <div class="progress-item">
-                    <div class="progress-circle">
-                        <div class="progress-value">80</div>
-                    </div>
-                    <div class="progress-text">中等强度</div>
-                </div>
-                <button class="theme-button" style="background: #3dc295; padding: 8px 15px;">活动指南</button>
-            </div>
-        </div>
+            if (!age || age < 45 || age > 100) {
+                showToast('请输入45-100岁之间的年龄');
+                return false;
+            }
+            
+            if (!gender) {
+                showToast('请选择性别');
+                return false;
+            }
+            
+            userHealthData.age = age;
+            userHealthData.gender = gender.value;
+            break;
+            
+        case 2:
+            const diseases = document.querySelectorAll('input[name="diseases"]:checked');
+            const joints = document.querySelector('input[name="joints"]:checked');
+            
+            if (diseases.length === 0) {
+                showToast('请选择慢性病史情况');
+                return false;
+            }
+            
+            if (!joints) {
+                showToast('请选择关节状况');
+                return false;
+            }
+            
+            userHealthData.diseases = Array.from(diseases).map(d => d.value);
+            userHealthData.joints = joints.value;
+            break;
+            
+        case 3:
+            const goals = document.querySelectorAll('input[name="goals"]:checked');
+            const intensity = document.querySelector('input[name="intensity"]:checked');
+            
+            if (goals.length === 0) {
+                showToast('请选择健康目标');
+                return false;
+            }
+            
+            if (!intensity) {
+                showToast('请选择运动强度偏好');
+                return false;
+            }
+            
+            userHealthData.goals = Array.from(goals).map(g => g.value);
+            userHealthData.intensity = intensity.value;
+            break;
+    }
+    
+    return true;
+}
 
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">今日计划</div>
-                <div class="card-more">查看全部 ></div>
-            </div>
-            <div class="schedule-list">
-                <div class="schedule-item">
-                    <div class="schedule-time">08:00</div>
-                    <div class="schedule-content">
-                        <div class="schedule-title">早间太极</div>
-                        <div class="schedule-desc">20分钟，初级难度</div>
-                    </div>
-                    <div class="schedule-status">已完成</div>
-                </div>
-                <div class="schedule-item">
-                    <div class="schedule-time">12:00</div>
-                    <div class="schedule-content">
-                        <div class="schedule-title">午餐推荐</div>
-                        <div class="schedule-desc">清蒸鱼、时蔬、粗粮饭</div>
-                    </div>
-                    <div class="schedule-status">进行中</div>
-                </div>
-                <div class="schedule-item">
-                    <div class="schedule-time">17:00</div>
-                    <div class="schedule-content">
-                        <div class="schedule-title">八段锦练习</div>
-                        <div class="schedule-desc">15分钟，全身放松</div>
-                    </div>
-                    <div class="schedule-status">未开始</div>
-                </div>
-            </div>
-        </div>
+// 更新步骤显示
+function updateStepDisplay() {
+    // 隐藏所有步骤
+    for (let i = 1; i <= 3; i++) {
+        const step = document.getElementById(`step-${i}`);
+        step.style.display = 'none';
+    }
+    
+    // 显示当前步骤
+    const currentStepElement = document.getElementById(`step-${currentStep}`);
+    currentStepElement.style.display = 'block';
+    
+    // 更新按钮状态
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const submitBtn = document.getElementById('submit-survey-btn');
+    
+    prevBtn.style.display = currentStep === 1 ? 'none' : 'block';
+    nextBtn.style.display = currentStep === 3 ? 'none' : 'block';
+    submitBtn.style.display = currentStep === 3 ? 'block' : 'none';
+}
 
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">推荐饮食</div>
-                <div class="card-more">更多 ></div>
-            </div>
-            <div class="diet-list">
-                <div class="diet-item">
-                    <div class="diet-icon">
-                        <i class="fas fa-utensils"></i>
-                    </div>
-                    <div class="diet-content">
-                        <div class="diet-title">早餐</div>
-                        <div class="diet-desc">全麦面包、鸡蛋、牛奶、水果</div>
-                    </div>
-                </div>
-                <div class="diet-item">
-                    <div class="diet-icon">
-                        <i class="fas fa-drumstick-bite"></i>
-                    </div>
-                    <div class="diet-content">
-                        <div class="diet-title">午餐</div>
-                        <div class="diet-desc">糙米饭、清蒸鱼、凉拌蔬菜</div>
-                    </div>
-                </div>
-                <div class="diet-item">
-                    <div class="diet-icon">
-                        <i class="fas fa-carrot"></i>
-                    </div>
-                    <div class="diet-content">
-                        <div class="diet-title">晚餐</div>
-                        <div class="diet-desc">蔬菜沙拉、鸡胸肉、小米粥</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `,
+// 提交问卷
+function submitSurvey() {
+    if (validateCurrentStep()) {
+        // 保存用户健康数据
+        localStorage.setItem('userHealthData', JSON.stringify(userHealthData));
+        
+        showToast('健康信息已保存');
+        setTimeout(() => {
+            hideSurvey();
+            showMainApp();
+        }, 1000);
+    }
+}
 
-    // 社区页面 - 交流模块
-    community: `
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">社区交流</div>
-                <div class="card-more">发布 +</div>
-            </div>
-            <div class="post-filter">
-                <span class="filter-item active">热门</span>
-                <span class="filter-item">最新</span>
-                <span class="filter-item">关注</span>
-            </div>
-            <div class="post-list">
-                <div class="post-item">
-                    <div class="post-user">
-                        <div class="user-avatar">
-                            <i class="fas fa-user-circle fa-2x"></i>
-                        </div>
-                        <div class="user-info">
-                            <div class="user-name">张阿姨</div>
-                            <div class="post-time">2小时前</div>
-                        </div>
-                    </div>
-                    <div class="post-content">
-                        今天跟着视频学习了太极拳的基本动作，感觉很不错，坚持一周了，腰不那么疼了！
-                    </div>
-                    <div class="post-image">
-                        <img src="https://picsum.photos/300/200" alt="太极练习">
-                    </div>
-                    <div class="post-actions">
-                        <div class="action-item">
-                            <i class="far fa-heart"></i> 58
-                        </div>
-                        <div class="action-item">
-                            <i class="far fa-comment"></i> 23
-                        </div>
-                        <div class="action-item">
-                            <i class="far fa-share-square"></i> 5
-                        </div>
-                    </div>
-                </div>
-                <div class="post-item">
-                    <div class="post-user">
-                        <div class="user-avatar">
-                            <i class="fas fa-user-circle fa-2x"></i>
-                        </div>
-                        <div class="user-info">
-                            <div class="user-name">王叔叔</div>
-                            <div class="post-time">昨天</div>
-                        </div>
-                    </div>
-                    <div class="post-content">
-                        分享一个简单的健康食谱：枸杞煮鸡蛋，每天早上一杯，眼睛明亮，精神好！
-                    </div>
-                    <div class="post-actions">
-                        <div class="action-item">
-                            <i class="far fa-heart"></i> 42
-                        </div>
-                        <div class="action-item">
-                            <i class="far fa-comment"></i> 15
-                        </div>
-                        <div class="action-item">
-                            <i class="far fa-share-square"></i> 8
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+// 隐藏健康问卷
+function hideSurvey() {
+    const surveyOverlay = document.getElementById('survey-overlay');
+    surveyOverlay.classList.remove('active');
+}
 
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">附近活动</div>
-                <div class="card-more">全部 ></div>
-            </div>
-            <div class="event-list">
-                <div class="event-item">
-                    <div class="event-date">
-                        <div class="date-day">15</div>
-                        <div class="date-month">8月</div>
-                    </div>
-                    <div class="event-info">
-                        <div class="event-title">社区太极晨练</div>
-                        <div class="event-location">
-                            <i class="fas fa-map-marker-alt"></i> 中央公园
-                        </div>
-                        <div class="event-time">
-                            <i class="far fa-clock"></i> 06:30-07:30
-                        </div>
-                    </div>
-                    <button class="event-join">报名</button>
-                </div>
-                <div class="event-item">
-                    <div class="event-date">
-                        <div class="date-day">18</div>
-                        <div class="date-month">8月</div>
-                    </div>
-                    <div class="event-info">
-                        <div class="event-title">健康饮食讲座</div>
-                        <div class="event-location">
-                            <i class="fas fa-map-marker-alt"></i> 社区活动中心
-                        </div>
-                        <div class="event-time">
-                            <i class="far fa-clock"></i> 14:00-16:00
-                        </div>
-                    </div>
-                    <button class="event-join">报名</button>
-                </div>
-            </div>
-        </div>
-    `,
+// 显示主应用
+function showMainApp() {
+    // 检查是否已经登录
+    const isLoggedIn = localStorage.getItem('userHealthData');
+    if (!isLoggedIn) {
+        // 如果未登录，显示登录界面
+        const loginOverlay = document.getElementById('login-overlay');
+        loginOverlay.classList.add('active');
+        return;
+    }
+    
+    // 隐藏所有overlay
+    document.querySelectorAll('.overlay').forEach(overlay => {
+        overlay.classList.remove('active');
+    });
+    
+    // 显示主应用内容
+    document.querySelector('header').style.display = 'flex';
+    document.querySelector('main').style.display = 'block';
+    document.querySelector('.bottom-nav').style.display = 'flex';
+    
+    // 初始化显示首页
+    showPage('home');
+    
+    // 为底部导航添加点击事件
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const pageName = item.getAttribute('data-page');
+            showPage(pageName);
+        });
+    });
+    
+    // 初始化视频播放功能
+    initVideoPlayer();
+}
 
-    // 我的页面 - 运动AI反馈
-    profile: `
-        <div class="user-profile">
-            <div class="user-avatar-large">
-                <i class="fas fa-user-circle fa-4x"></i>
-            </div>
-            <div class="user-name-large">张明</div>
-            <div class="user-level">健康达人 Lv.3</div>
-        </div>
-
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">AI 健康报告</div>
-                <div class="card-more">详情 ></div>
-            </div>
-            <div class="health-stats">
-                <div class="stat-item">
-                    <div class="stat-value">23</div>
-                    <div class="stat-label">连续运动天数</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">5.2</div>
-                    <div class="stat-label">周平均运动时长(小时)</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">78</div>
-                    <div class="stat-label">总体健康评分</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">AI 健康建议</div>
-            </div>
-            <div class="ai-feedback">
-                <div class="feedback-item">
-                    <div class="feedback-icon">
-                        <i class="fas fa-thumbs-up"></i>
-                    </div>
-                    <div class="feedback-content">
-                        <div class="feedback-title">做得好的方面</div>
-                        <div class="feedback-detail">
-                            <ul>
-                                <li>坚持每日晨练太极拳</li>
-                                <li>饮食规律，蔬果摄入充足</li>
-                                <li>作息时间稳定</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="feedback-item">
-                    <div class="feedback-icon warning">
-                        <i class="fas fa-exclamation-triangle"></i>
-                    </div>
-                    <div class="feedback-content">
-                        <div class="feedback-title">需要改进的方面</div>
-                        <div class="feedback-detail">
-                            <ul>
-                                <li>近期血压略高，建议减少盐分摄入</li>
-                                <li>缺乏有氧运动，建议增加慢跑或快走</li>
-                                <li>水分摄入不足，建议多喝水</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">本周运动数据</div>
-            </div>
-            <div class="exercise-data">
-                <div class="data-chart">
-                    <!-- 模拟图表区域 -->
-                    <div class="chart-placeholder">
-                        <div class="chart-bar" style="height: 30px;"></div>
-                        <div class="chart-bar" style="height: 60px;"></div>
-                        <div class="chart-bar" style="height: 45px;"></div>
-                        <div class="chart-bar" style="height: 20px;"></div>
-                        <div class="chart-bar" style="height: 50px;"></div>
-                        <div class="chart-bar" style="height: 35px;"></div>
-                        <div class="chart-bar" style="height: 40px;"></div>
-                    </div>
-                    <div class="chart-labels">
-                        <span>一</span>
-                        <span>二</span>
-                        <span>三</span>
-                        <span>四</span>
-                        <span>五</span>
-                        <span>六</span>
-                        <span>日</span>
-                    </div>
-                </div>
-                <div class="exercise-summary">
-                    <div class="summary-item">
-                        <div class="summary-label">周运动总时长</div>
-                        <div class="summary-value">5小时12分钟</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-label">平均心率</div>
-                        <div class="summary-value">72 BPM</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-label">消耗热量</div>
-                        <div class="summary-value">1,240 千卡</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `,
-
-    // AI聊天页面 - 结构保持不变，但初始消息会由 history 控制
-    ai: `
-        <div class="chat-container">
-            <div class="chat-messages" id="chat-messages">
-                <!-- 聊天消息将通过 chatHistory 动态加载 -->
-            </div>
-            <div class="chat-input-area">
-                <textarea id="chat-input" placeholder="输入您的问题..." rows="1"></textarea>
-                <button id="send-button">发送</button>
-            </div>
-        </div>
-    `
-};
-
-// --- 用于存储聊天记录的数组 ---
-let chatHistory = [
-    // 初始欢迎消息
-    { text: "您好！我是您的AI健康反馈，有什么可以帮您的吗？", classes: ['ai-message'] }
-];
+// 显示提示信息
+function showToast(message) {
+    // 创建toast元素
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0,0,0,0.8);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 20px;
+        font-size: 14px;
+        z-index: 10000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // 显示动画
+    setTimeout(() => {
+        toast.style.opacity = '1';
+    }, 10);
+    
+    // 自动隐藏
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => {
+            document.body.removeChild(toast);
+        }, 300);
+    }, 2000);
+}
 
 // 为页面导航添加CSS样式
 document.head.insertAdjacentHTML('beforeend', `
@@ -782,23 +664,41 @@ document.head.insertAdjacentHTML('beforeend', `
 
 // 页面加载时显示首页
 document.addEventListener('DOMContentLoaded', () => {
-    // 初始化显示首页
-    showPage('home');
+    // 初始化登录功能
+    initLogin();
     
-    // 为底部导航添加点击事件
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', () => {
-            const pageName = item.getAttribute('data-page');
-            showPage(pageName);
-        });
-    });
+    // 检查是否已经登录
+    const isLoggedIn = localStorage.getItem('userHealthData');
+    if (!isLoggedIn) {
+        // 如果未登录，隐藏主应用内容，显示登录界面
+        document.querySelector('header').style.display = 'none';
+        document.querySelector('main').style.display = 'none';
+        document.querySelector('.bottom-nav').style.display = 'none';
+        
+        const loginOverlay = document.getElementById('login-overlay');
+        loginOverlay.classList.add('active');
+    } else {
+        // 如果已登录，显示主应用
+        showMainApp();
+        // 初始化视频播放功能
+        initVideoPlayer();
+        // 初始化语音按钮
+        initMicButton();
+    }
 });
 
 // 显示指定页面
 function showPage(pageName) {
-    // 更新页面内容
-    const contentArea = document.getElementById('content');
-    contentArea.innerHTML = pageContents[pageName];
+    // 隐藏所有页面
+    document.querySelectorAll('.page-section').forEach(section => {
+        section.classList.remove('active');
+    });
+    
+    // 显示指定页面
+    const targetPage = document.getElementById(`page-${pageName}`);
+    if (targetPage) {
+        targetPage.classList.add('active');
+    }
     
     // 更新活跃的导航项
     document.querySelectorAll('.nav-item').forEach(item => {
@@ -892,6 +792,20 @@ function appendMessage(text, ...classes) {
 
 // 更新后的 callBackendAPI：使用新的 appendMessage 添加 AI 回复
 async function callBackendAPI(userMessage) {
+    // 1. 获取健康信息
+    let healthInfo = '';
+    try {
+        const userHealthData = JSON.parse(localStorage.getItem('userHealthData') || '{}');
+        if (userHealthData && Object.keys(userHealthData).length > 0) {
+            healthInfo = `【用户健康信息】年龄：${userHealthData.age || ''}，性别：${userHealthData.gender === 'male' ? '男' : userHealthData.gender === 'female' ? '女' : ''}，慢性病史：${(userHealthData.diseases || []).join('、') || '无'}，关节状况：${userHealthData.joints || ''}，健康目标：${(userHealthData.goals || []).join('、') || ''}，运动强度偏好：${userHealthData.intensity || ''}。\n`;
+        }
+    } catch (e) {
+        healthInfo = '';
+    }
+
+    // 2. 拼接健康信息和用户消息
+    const realPrompt = healthInfo + userMessage;
+
     // 显示加载提示 (仅添加到 DOM，不存入 history)
     appendMessageToDOM("AI思考中...", ['ai-message', 'thinking']);
 
@@ -901,7 +815,7 @@ async function callBackendAPI(userMessage) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ message: userMessage })
+            body: JSON.stringify({ message: realPrompt })
         });
 
         // 移除加载提示
@@ -939,7 +853,465 @@ async function callBackendAPI(userMessage) {
     }
 }
 
-/*
-// --- (注释掉之前的模拟代码) ---
-// function simulateAIResponse(userMessage) { ... }
-*/
+// --- 用于存储聊天记录的数组 ---
+let chatHistory = [
+    // 初始欢迎消息
+    { text: "您好！我是您的AI健康反馈，有什么可以帮您的吗？", classes: ['ai-message'] }
+];
+
+// --- 视频播放和反馈功能 ---
+let currentVideoTitle = '';
+let selectedFeedback = {
+    intensity: '',
+    feeling: '',
+    difficulty: '',
+    exitReason: '',
+    specialFeeling: ''
+};
+let videoStartTime = 0;
+let videoEndReason = ''; // 'completed', 'paused', 'closed'
+
+// 初始化视频播放功能
+function initVideoPlayer() {
+    // 为所有视频项添加点击事件
+    document.querySelectorAll('.video-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const videoSrc = this.getAttribute('data-video');
+            const videoTitle = this.getAttribute('data-title');
+            playVideo(videoSrc, videoTitle);
+        });
+    });
+
+    // 为视频预览添加错误处理
+    document.querySelectorAll('.video-preview').forEach(preview => {
+        preview.addEventListener('error', function(e) {
+            console.log('视频预览加载失败:', e);
+            // 保持占位符显示，隐藏视频元素
+            this.style.display = 'none';
+        });
+        
+        // 添加加载成功处理
+        preview.addEventListener('loadeddata', function() {
+            // 视频加载成功，显示视频并隐藏占位符
+            this.classList.add('loaded');
+            const placeholder = this.previousElementSibling;
+            if (placeholder && placeholder.classList.contains('video-placeholder')) {
+                placeholder.style.display = 'none';
+            }
+        });
+        
+        // 添加加载开始处理
+        preview.addEventListener('loadstart', function() {
+            // 开始加载时显示加载状态
+            this.style.opacity = '0';
+        });
+    });
+
+    // 关闭视频按钮
+    document.getElementById('close-video-btn').addEventListener('click', () => {
+        videoEndReason = 'closed';
+        closeVideo();
+    });
+
+    // 视频播放结束事件
+    document.getElementById('fullscreen-video').addEventListener('ended', () => {
+        videoEndReason = 'completed';
+        onVideoEnded();
+    });
+
+    // 视频暂停事件
+    document.getElementById('fullscreen-video').addEventListener('pause', () => {
+        // 只有在用户主动暂停时才记录
+        if (videoEndReason === '') {
+            videoEndReason = 'paused';
+        }
+    });
+
+    // 视频播放事件
+    document.getElementById('fullscreen-video').addEventListener('play', () => {
+        // 如果重新播放，重置结束原因
+        if (videoEndReason === 'paused') {
+            videoEndReason = '';
+        }
+    });
+
+    // 初始化反馈功能
+    initFeedback();
+}
+
+// 播放视频
+function playVideo(videoSrc, videoTitle) {
+    const videoPlayer = document.getElementById('fullscreen-video');
+    const videoTitleElement = document.querySelector('.video-title-fullscreen');
+    const videoOverlay = document.getElementById('video-player-overlay');
+
+    // 重置状态
+    videoEndReason = '';
+    videoStartTime = Date.now();
+
+    // 设置视频源和标题
+    videoPlayer.src = videoSrc;
+    videoTitleElement.textContent = videoTitle;
+    currentVideoTitle = videoTitle;
+
+    // 显示视频播放器
+    videoOverlay.classList.add('active');
+
+    // 添加加载事件监听
+    videoPlayer.addEventListener('loadeddata', function onLoadedData() {
+        // 视频加载成功后播放
+        videoPlayer.play().catch(error => {
+            console.log('视频播放失败:', error);
+            showToast('视频播放失败，请稍后重试');
+        });
+        // 移除事件监听器，避免重复触发
+        videoPlayer.removeEventListener('loadeddata', onLoadedData);
+    });
+
+    // 添加错误事件监听
+    videoPlayer.addEventListener('error', function onError(e) {
+        console.log('视频加载错误:', e);
+        showToast('视频加载失败，请检查网络连接或稍后重试');
+        // 移除事件监听器
+        videoPlayer.removeEventListener('error', onError);
+    });
+
+    // 设置超时处理
+    setTimeout(() => {
+        if (videoPlayer.readyState === 0) {
+            showToast('视频加载超时，请检查网络连接');
+        }
+    }, 10000); // 10秒超时
+}
+
+// 关闭视频
+function closeVideo() {
+    const videoPlayer = document.getElementById('fullscreen-video');
+    const videoOverlay = document.getElementById('video-player-overlay');
+
+    // 暂停视频
+    videoPlayer.pause();
+    videoPlayer.currentTime = 0;
+
+    // 隐藏视频播放器
+    videoOverlay.classList.remove('active');
+
+    // 如果视频播放时间超过10秒，显示反馈
+    const playDuration = (Date.now() - videoStartTime) / 1000;
+    if (playDuration > 10) {
+        setTimeout(() => {
+            showFeedback();
+        }, 500);
+    }
+}
+
+// 视频播放结束
+function onVideoEnded() {
+    // 关闭视频播放器
+    closeVideo();
+    
+    // 显示反馈弹窗
+    setTimeout(() => {
+        showFeedback();
+    }, 500);
+}
+
+// 初始化反馈功能
+function initFeedback() {
+    // 反馈按钮点击事件
+    document.querySelectorAll('.feedback-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const feeling = this.getAttribute('data-feeling');
+            const value = this.getAttribute('data-value');
+            const questionType = this.closest('.feedback-question').querySelector('label').textContent;
+            
+            selectFeedback(feeling, value, questionType);
+        });
+    });
+
+    // 特殊感觉文本输入框事件
+    const specialFeelingTextarea = document.getElementById('special-feeling');
+    const charCount = document.getElementById('char-count');
+    
+    specialFeelingTextarea.addEventListener('input', function() {
+        const length = this.value.length;
+        charCount.textContent = length;
+        
+        // 更新字符计数颜色
+        if (length > 180) {
+            charCount.style.color = '#ff6b6b';
+        } else if (length > 150) {
+            charCount.style.color = '#ffa726';
+        } else {
+            charCount.style.color = '#999';
+        }
+        
+        // 存储特殊感觉内容
+        selectedFeedback.specialFeeling = this.value;
+    });
+
+    // 提交反馈按钮
+    document.getElementById('submit-feedback-btn').addEventListener('click', submitFeedback);
+
+    // 跳过反馈按钮
+    document.getElementById('skip-feedback-btn').addEventListener('click', skipFeedback);
+}
+
+// 选择反馈选项
+function selectFeedback(feeling, value, questionType) {
+    // 移除同组其他按钮的选中状态
+    const questionDiv = event.target.closest('.feedback-question');
+    questionDiv.querySelectorAll('.feedback-btn').forEach(btn => {
+        btn.classList.remove('selected');
+    });
+
+    // 选中当前按钮
+    event.target.classList.add('selected');
+
+    // 根据问题类型存储反馈
+    if (questionType.includes('退出原因')) {
+        selectedFeedback.exitReason = value;
+    } else if (questionType.includes('强度')) {
+        selectedFeedback.intensity = value;
+    } else if (questionType.includes('身体感受')) {
+        selectedFeedback.feeling = value;
+    } else if (questionType.includes('困难')) {
+        selectedFeedback.difficulty = value;
+    }
+
+    // 检查是否可以启用提交按钮
+    checkSubmitButton();
+}
+
+// 检查是否可以启用提交按钮
+function checkSubmitButton() {
+    const submitBtn = document.getElementById('submit-feedback-btn');
+    const hasIntensity = selectedFeedback.intensity !== '';
+    const hasFeeling = selectedFeedback.feeling !== '';
+    const hasDifficulty = selectedFeedback.difficulty !== '';
+    const hasExitReason = selectedFeedback.exitReason !== '';
+
+    // 如果中途退出，需要选择退出原因
+    if (videoEndReason !== 'completed') {
+        if (!hasExitReason) {
+            submitBtn.disabled = true;
+            return;
+        }
+    }
+
+    // 至少需要选择两个问题才能提交（不包括退出原因）
+    const selectedCount = [hasIntensity, hasFeeling, hasDifficulty].filter(Boolean).length;
+    submitBtn.disabled = selectedCount < 2;
+}
+
+// 显示反馈弹窗
+function showFeedback() {
+    const feedbackOverlay = document.getElementById('feedback-overlay');
+    const exitReasonQuestion = document.getElementById('exit-reason-question');
+    
+    // 根据视频结束原因决定是否显示退出原因问题
+    if (videoEndReason !== 'completed') {
+        exitReasonQuestion.style.display = 'block';
+    } else {
+        exitReasonQuestion.style.display = 'none';
+    }
+    
+    feedbackOverlay.classList.add('active');
+    
+    // 重置反馈选择
+    resetFeedback();
+}
+
+// 重置反馈选择
+function resetFeedback() {
+    selectedFeedback = {
+        intensity: '',
+        feeling: '',
+        difficulty: '',
+        exitReason: '',
+        specialFeeling: ''
+    };
+
+    // 移除所有选中状态
+    document.querySelectorAll('.feedback-btn').forEach(btn => {
+        btn.classList.remove('selected');
+    });
+
+    // 清空特殊感觉输入框
+    const specialFeelingTextarea = document.getElementById('special-feeling');
+    const charCount = document.getElementById('char-count');
+    specialFeelingTextarea.value = '';
+    charCount.textContent = '0';
+    charCount.style.color = '#999';
+
+    // 禁用提交按钮
+    document.getElementById('submit-feedback-btn').disabled = true;
+}
+
+// 提交反馈
+function submitFeedback() {
+    // 组织反馈语言
+    const feedbackText = organizeFeedbackText();
+    
+    // 隐藏反馈弹窗
+    hideFeedback();
+    
+    // 切换到AI页面并发送反馈
+    setTimeout(() => {
+        showPage('ai');
+        setTimeout(() => {
+            // 发送反馈到AI助手
+            appendMessage(feedbackText, 'user-message');
+            callBackendAPI(feedbackText);
+        }, 500);
+    }, 300);
+}
+
+// 隐藏反馈弹窗
+function hideFeedback() {
+    const feedbackOverlay = document.getElementById('feedback-overlay');
+    feedbackOverlay.classList.remove('active');
+}
+
+// 跳过反馈
+function skipFeedback() {
+    hideFeedback();
+}
+
+// 组织反馈文本
+function organizeFeedbackText() {
+    const parts = [];
+    const playDuration = Math.round((Date.now() - videoStartTime) / 1000);
+    
+    parts.push(`我刚观看了"${currentVideoTitle}"的运动视频`);
+    
+    // 根据结束原因添加不同的描述
+    if (videoEndReason === 'completed') {
+        parts.push('完整观看了整个视频');
+    } else if (videoEndReason === 'paused') {
+        parts.push(`观看了约${Math.floor(playDuration / 60)}分${playDuration % 60}秒后暂停了`);
+    } else if (videoEndReason === 'closed') {
+        parts.push(`观看了约${Math.floor(playDuration / 60)}分${playDuration % 60}秒后关闭了视频`);
+    }
+    
+    // 添加退出原因
+    if (selectedFeedback.exitReason) {
+        parts.push(`中途退出的原因：${selectedFeedback.exitReason}`);
+    }
+    
+    if (selectedFeedback.intensity) {
+        parts.push(`运动强度感受：${selectedFeedback.intensity}`);
+    }
+    
+    if (selectedFeedback.feeling) {
+        parts.push(`身体感受：${selectedFeedback.feeling}`);
+    }
+    
+    if (selectedFeedback.difficulty) {
+        parts.push(`遇到的困难：${selectedFeedback.difficulty}`);
+    }
+    
+    // 添加特殊感觉
+    if (selectedFeedback.specialFeeling.trim()) {
+        parts.push(`特殊感受：${selectedFeedback.specialFeeling.trim()}`);
+    }
+    
+    // 根据观看情况给出不同的建议请求
+    if (videoEndReason === 'completed') {
+        parts.push('请根据我的反馈给我一些运动建议');
+    } else {
+        parts.push('请根据我的反馈给我一些建议，包括如何更好地完成这个运动');
+    }
+    
+    return parts.join('，') + '。';
+}
+
+// --- 语音提问功能 ---
+let mediaRecorder = null;
+let audioChunks = [];
+let isRecording = false;
+
+function initMicButton() {
+    const micBtn = document.getElementById('mic-button');
+    const chatInput = document.getElementById('chat-input');
+    if (!micBtn) return;
+
+    // 录音状态提示
+    let recordToast = null;
+    function showRecordToast(msg) {
+        if (recordToast) recordToast.remove();
+        recordToast = document.createElement('div');
+        recordToast.className = 'toast';
+        recordToast.textContent = msg;
+        recordToast.style.cssText = `
+            position: fixed; top: 60%; left: 50%; transform: translate(-50%, -50%); background: #3dc295; color: white; padding: 16px 28px; border-radius: 25px; font-size: 16px; z-index: 10001; opacity: 0.95;`
+        document.body.appendChild(recordToast);
+    }
+    function hideRecordToast() {
+        if (recordToast) { recordToast.remove(); recordToast = null; }
+    }
+
+    // 按下开始录音
+    micBtn.addEventListener('mousedown', startRecording);
+    micBtn.addEventListener('touchstart', startRecording);
+    // 松开结束录音
+    micBtn.addEventListener('mouseup', stopRecording);
+    micBtn.addEventListener('mouseleave', stopRecording);
+    micBtn.addEventListener('touchend', stopRecording);
+
+    async function startRecording(e) {
+        e.preventDefault();
+        if (isRecording) return;
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            showToast('当前浏览器不支持录音');
+            return;
+        }
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+            mediaRecorder.ondataavailable = event => {
+                if (event.data.size > 0) audioChunks.push(event.data);
+            };
+            mediaRecorder.onstop = async () => {
+                if (audioChunks.length === 0) return;
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                // 上传音频到后端
+                showRecordToast('正在识别...');
+                const formData = new FormData();
+                formData.append('audio', audioBlob, 'record.wav');
+                try {
+                    const resp = await fetch('http://localhost:5000/api/asr', { method: 'POST', body: formData });
+                    const data = await resp.json();
+                    hideRecordToast();
+                    if (data.text) {
+                        chatInput.value = data.text;
+                        chatInput.style.height = 'auto';
+                        chatInput.style.height = (chatInput.scrollHeight) + 'px';
+                        // 自动发送
+                        appendMessage(data.text, 'user-message');
+                        callBackendAPI(data.text);
+                    } else {
+                        showToast(data.error || '识别失败');
+                    }
+                } catch (err) {
+                    hideRecordToast();
+                    showToast('语音识别失败');
+                }
+            };
+            mediaRecorder.start();
+            isRecording = true;
+            showRecordToast('正在录音... 松开发送');
+        } catch (err) {
+            showToast('无法访问麦克风');
+        }
+    }
+    function stopRecording(e) {
+        if (!isRecording) return;
+        isRecording = false;
+        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+            mediaRecorder.stop();
+        }
+        hideRecordToast();
+    }
+}

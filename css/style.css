@@ -302,12 +302,82 @@ main {
 }
 
 .video-thumbnail {
+    position: relative;
     width: 120px;
     height: 80px;
-    background-color: #eee;
+    background-color: #000;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.video-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #3dc295 0%, #2ba085 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    z-index: 1;
+}
+
+.video-title-placeholder {
+    font-size: 10px;
+    text-align: center;
+    margin-top: 5px;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.video-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 2;
+    position: relative;
+}
+
+.video-preview.loaded {
+    opacity: 1;
+}
+
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: background 0.3s ease;
+    z-index: 3;
+}
+
+.video-item:hover .video-overlay {
+    background: rgba(0,0,0,0.5);
+}
+
+.video-duration {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 10px;
 }
 
 .video-info {
@@ -417,4 +487,690 @@ main {
     padding: 0 20px;
     cursor: pointer;
     font-size: 14px;
+}
+
+/* --- 登录界面样式 --- */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #e8f7f1 0%, #3dc295 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.login-container, .survey-container {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.login-header, .survey-header {
+    margin-bottom: 30px;
+}
+
+.login-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: bold;
+    color: #3dc295;
+    margin-bottom: 10px;
+}
+
+.login-logo i {
+    margin-right: 10px;
+    font-size: 32px;
+}
+
+.login-subtitle, .survey-subtitle {
+    color: #666;
+    font-size: 14px;
+}
+
+.survey-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #3dc295;
+    margin-bottom: 10px;
+}
+
+.survey-title i {
+    margin-right: 10px;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-group i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 16px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 15px 15px 15px 45px;
+    border: 2px solid #eee;
+    border-radius: 25px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #3dc295;
+}
+
+.input-group input[type="text"] {
+    padding-right: 120px;
+}
+
+.code-btn {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #3dc295;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.code-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.login-submit-btn {
+    width: 100%;
+    background: #3dc295;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 15px;
+    transition: background-color 0.3s ease;
+}
+
+.login-submit-btn:hover {
+    background: #2ba085;
+}
+
+.login-submit-btn i {
+    margin-right: 8px;
+}
+
+.login-tips {
+    color: #999;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-tips i {
+    margin-right: 5px;
+}
+
+/* --- 健康问卷样式 --- */
+.survey-form {
+    text-align: left;
+}
+
+.survey-step {
+    margin-bottom: 20px;
+}
+
+.step-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.age-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.age-input input {
+    flex: 1;
+    padding: 12px 15px;
+    border: 2px solid #eee;
+    border-radius: 15px;
+    font-size: 16px;
+}
+
+.age-input input:focus {
+    outline: none;
+    border-color: #3dc295;
+}
+
+.unit {
+    position: absolute;
+    right: 15px;
+    color: #999;
+    font-size: 14px;
+}
+
+.gender-options, .radio-options {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.radio-option, .checkbox-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+    padding: 10px 15px;
+    border: 2px solid #eee;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.radio-option:hover, .checkbox-option:hover {
+    border-color: #3dc295;
+    background: #f8fffd;
+}
+
+.radio-option input, .checkbox-option input {
+    display: none;
+}
+
+.radio-custom, .checkbox-custom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    margin-right: 8px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.checkbox-custom {
+    border-radius: 4px;
+}
+
+.radio-option input:checked + .radio-custom {
+    border-color: #3dc295;
+    background: #3dc295;
+}
+
+.radio-option input:checked + .radio-custom::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+}
+
+.checkbox-option input:checked + .checkbox-custom {
+    border-color: #3dc295;
+    background: #3dc295;
+}
+
+.checkbox-option input:checked + .checkbox-custom::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.radio-option i, .checkbox-option i {
+    margin-right: 5px;
+    color: #3dc295;
+}
+
+.checkbox-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+}
+
+.survey-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.survey-btn {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.survey-btn.primary {
+    background: #3dc295;
+    color: white;
+}
+
+.survey-btn.primary:hover {
+    background: #2ba085;
+}
+
+.survey-btn.secondary {
+    background: #f5f5f5;
+    color: #666;
+}
+
+.survey-btn.secondary:hover {
+    background: #e8e8e8;
+}
+
+.survey-btn i {
+    margin: 0 5px;
+}
+
+/* 响应式调整 */
+@media (max-width: 480px) {
+    .login-container, .survey-container {
+        padding: 20px;
+        margin: 20px;
+    }
+    
+    .gender-options, .radio-options {
+        flex-direction: column;
+    }
+    
+    .radio-option, .checkbox-option {
+        min-width: auto;
+        justify-content: flex-start;
+    }
+    
+    .checkbox-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .survey-buttons {
+        flex-direction: column;
+    }
+}
+
+/* --- 页面切换样式 --- */
+.page-section {
+    display: none;
+}
+
+.page-section.active {
+    display: block;
+}
+
+/* --- 视频播放器样式 --- */
+.video-overlay-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.video-overlay-fullscreen.active {
+    display: flex;
+}
+
+.video-player-container {
+    width: 90%;
+    max-width: 800px;
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.video-player-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: #3dc295;
+    color: white;
+}
+
+.video-title-fullscreen {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.close-video-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background 0.3s ease;
+}
+
+.close-video-btn:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+#fullscreen-video {
+    width: 100%;
+    height: auto;
+    max-height: 70vh;
+}
+
+/* --- 运动反馈弹窗样式 --- */
+.feedback-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+}
+
+.feedback-overlay.active {
+    display: flex;
+}
+
+.feedback-container {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.feedback-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.feedback-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: bold;
+    color: #3dc295;
+    margin-bottom: 8px;
+}
+
+.feedback-title i {
+    margin-right: 10px;
+}
+
+.feedback-subtitle {
+    color: #666;
+    font-size: 14px;
+}
+
+.feedback-content {
+    margin-bottom: 25px;
+}
+
+.feedback-question {
+    margin-bottom: 20px;
+}
+
+.feedback-question label {
+    display: block;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 12px;
+    font-size: 16px;
+}
+
+.feedback-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+}
+
+.feedback-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 10px;
+    border: 2px solid #eee;
+    border-radius: 15px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    color: #333;
+}
+
+.feedback-btn:hover {
+    border-color: #3dc295;
+    background: #f8fffd;
+}
+
+.feedback-btn.selected {
+    border-color: #3dc295;
+    background: #3dc295;
+    color: white;
+}
+
+.feedback-btn i {
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+.feedback-btn span {
+    text-align: center;
+    line-height: 1.2;
+}
+
+.feedback-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.feedback-skip-btn, .feedback-submit-btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.feedback-skip-btn {
+    background: #f5f5f5;
+    color: #666;
+}
+
+.feedback-skip-btn:hover {
+    background: #e8e8e8;
+}
+
+.feedback-submit-btn {
+    background: #3dc295;
+    color: white;
+}
+
+.feedback-submit-btn:hover:not(:disabled) {
+    background: #2ba085;
+}
+
+.feedback-submit-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.feedback-skip-btn i, .feedback-submit-btn i {
+    margin-right: 8px;
+}
+
+/* 响应式调整 */
+@media (max-width: 480px) {
+    .feedback-container {
+        padding: 20px;
+        margin: 20px;
+    }
+    
+    .feedback-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .feedback-buttons {
+        flex-direction: column;
+    }
+    
+    .video-player-container {
+        width: 95%;
+        margin: 10px;
+    }
+}
+
+/* 特殊感觉文本输入框样式 */
+.feedback-textarea-container {
+    position: relative;
+}
+
+#special-feeling {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #eee;
+    border-radius: 15px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 80px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+#special-feeling:focus {
+    outline: none;
+    border-color: #3dc295;
+}
+
+#special-feeling::placeholder {
+    color: #999;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.textarea-counter {
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+    font-size: 12px;
+    color: #999;
+    background: rgba(255,255,255,0.9);
+    padding: 2px 6px;
+    border-radius: 10px;
+}
+
+.feedback-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+/* --- AI语音按钮样式 --- */
+.mic-btn {
+    background: #3dc295;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.mic-btn:active, .mic-btn.recording {
+    background: #2ba085;
+}
+
+@media (max-width: 480px) {
+    .mic-btn {
+        width: 38px;
+        height: 38px;
+        font-size: 18px;
+    }
 } 

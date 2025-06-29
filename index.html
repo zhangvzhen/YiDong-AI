@@ -8,6 +8,216 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+    <!-- 登录界面 -->
+    <div id="login-overlay" class="overlay active">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="login-logo">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>颐动AI</span>
+                </div>
+                <div class="login-subtitle">中老年健康运动平台</div>
+            </div>
+            
+            <div class="login-form">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="login-phone" placeholder="请输入手机号码" maxlength="11">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-shield-alt"></i>
+                    <input type="text" id="login-code" placeholder="请输入验证码" maxlength="6">
+                    <button id="send-code-btn" class="code-btn">获取验证码</button>
+                </div>
+                <button id="login-btn" class="login-submit-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    登录
+                </button>
+                <div class="login-tips">
+                    <i class="fas fa-info-circle"></i>
+                    为保护您的健康信息，请使用手机号登录
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 健康问卷 -->
+    <div id="survey-overlay" class="overlay">
+        <div class="survey-container">
+            <div class="survey-header">
+                <div class="survey-title">
+                    <i class="fas fa-clipboard-list"></i>
+                    健康信息采集
+                </div>
+                <div class="survey-subtitle">为了给您提供更精准的健康建议</div>
+            </div>
+            
+            <div class="survey-form">
+                <div class="survey-step" id="step-1">
+                    <div class="step-title">基本信息</div>
+                    
+                    <div class="form-group">
+                        <label>年龄</label>
+                        <div class="age-input">
+                            <input type="number" id="age" min="45" max="100" placeholder="请输入年龄">
+                            <span class="unit">岁</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>性别</label>
+                        <div class="gender-options">
+                            <label class="radio-option">
+                                <input type="radio" name="gender" value="male">
+                                <span class="radio-custom"></span>
+                                <i class="fas fa-mars"></i>
+                                男
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="gender" value="female">
+                                <span class="radio-custom"></span>
+                                <i class="fas fa-venus"></i>
+                                女
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="survey-step" id="step-2" style="display: none;">
+                    <div class="step-title">健康状况</div>
+                    
+                    <div class="form-group">
+                        <label>慢性病史（可多选）</label>
+                        <div class="checkbox-options">
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="diseases" value="hypertension">
+                                <span class="checkbox-custom"></span>
+                                高血压
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="diseases" value="diabetes">
+                                <span class="checkbox-custom"></span>
+                                糖尿病
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="diseases" value="heart">
+                                <span class="checkbox-custom"></span>
+                                心脏病
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="diseases" value="arthritis">
+                                <span class="checkbox-custom"></span>
+                                关节炎
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="diseases" value="none">
+                                <span class="checkbox-custom"></span>
+                                无慢性病史
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>关节状况</label>
+                        <div class="radio-options">
+                            <label class="radio-option">
+                                <input type="radio" name="joints" value="good">
+                                <span class="radio-custom"></span>
+                                良好
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="joints" value="normal">
+                                <span class="radio-custom"></span>
+                                一般
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="joints" value="poor">
+                                <span class="radio-custom"></span>
+                                较差
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="survey-step" id="step-3" style="display: none;">
+                    <div class="step-title">健康目标</div>
+                    
+                    <div class="form-group">
+                        <label>您希望通过运动达到什么目标？（可多选）</label>
+                        <div class="checkbox-options">
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="goals" value="weight">
+                                <span class="checkbox-custom"></span>
+                                控制体重
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="goals" value="flexibility">
+                                <span class="checkbox-custom"></span>
+                                提高柔韧性
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="goals" value="strength">
+                                <span class="checkbox-custom"></span>
+                                增强力量
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="goals" value="balance">
+                                <span class="checkbox-custom"></span>
+                                改善平衡
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="goals" value="relaxation">
+                                <span class="checkbox-custom"></span>
+                                放松心情
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="goals" value="social">
+                                <span class="checkbox-custom"></span>
+                                社交交流
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>运动强度偏好</label>
+                        <div class="radio-options">
+                            <label class="radio-option">
+                                <input type="radio" name="intensity" value="light">
+                                <span class="radio-custom"></span>
+                                轻度（适合初学者）
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="intensity" value="moderate">
+                                <span class="radio-custom"></span>
+                                中度（有一定基础）
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="intensity" value="strong">
+                                <span class="radio-custom"></span>
+                                强度（身体较好）
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="survey-buttons">
+                    <button id="prev-btn" class="survey-btn secondary" style="display: none;">
+                        <i class="fas fa-arrow-left"></i>
+                        上一步
+                    </button>
+                    <button id="next-btn" class="survey-btn primary">
+                        下一步
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button id="submit-survey-btn" class="survey-btn primary" style="display: none;">
+                        <i class="fas fa-check"></i>
+                        完成
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <header>
         <div class="logo">颐动AI</div>
         <div class="search-icon">
@@ -22,15 +232,15 @@
         <div id="page-home" class="page-section active">
             <div class="search-container">
                 <i class="fas fa-search search-icon-input"></i>
-                <input type="text" class="search-input" placeholder="搜索光波音色锻炼...">
+                <input type="text" class="search-input" placeholder="搜索你想锻炼...">
                 <button class="search-button">健康进步</button>
             </div>
     
             <div class="theme-card">
                 <div class="theme-info">
-                    <div class="theme-title">社区功程<br>(太极运动家庭展)</div>
+                    <div class="theme-title">社区热门<br>(文化广场太极展)</div>
                     <div class="theme-desc">适合初学者的太极</div>
-                    <button class="theme-button">创新场景</button>
+                    <button class="theme-button">无器材场景</button>
                 </div>
                 <div class="secondary-button">查询心得</div>
                 <img src="https://picsum.photos/100/100" alt="太极" class="theme-image">
@@ -46,7 +256,7 @@
                         <div class="feature-icon feature-icon-1">
                             <i class="fas fa-running"></i>
                         </div>
-                        <div class="feature-name">高强度</div>
+                        <div class="feature-name">中等强度</div>
                     </div>
                     <div class="feature-item">
                         <div class="feature-icon feature-icon-2">
@@ -75,9 +285,19 @@
                     <div class="card-more">更多 ></div>
                 </div>
                 <div class="video-list">
-                    <div class="video-item">
+                    <div class="video-item" data-video="/YiDong-AI/video/太极拳.mp4" data-title="太极拳入门教学 - 第一集">
                         <div class="video-thumbnail">
-                            <i class="fas fa-play-circle fa-2x"></i>
+                            <div class="video-placeholder">
+                                <i class="fas fa-play-circle fa-3x"></i>
+                                <div class="video-title-placeholder">太极拳入门教学</div>
+                            </div>
+                            <video class="video-preview" muted loop>
+                                <source src="video/太极拳.mp4" type="/YiDong-AI/video/mp4">
+                            </video>
+                            <div class="video-overlay">
+                                <i class="fas fa-play-circle fa-2x"></i>
+                                <div class="video-duration">20:15</div>
+                            </div>
                         </div>
                         <div class="video-info">
                             <div class="video-title">太极拳入门教学 - 第一集</div>
@@ -86,9 +306,19 @@
                             </div>
                         </div>
                     </div>
-                    <div class="video-item">
+                    <div class="video-item" data-video="/YiDong-AI/video/八段锦.mp4" data-title="适合中老年人的八段锦">
                         <div class="video-thumbnail">
-                            <i class="fas fa-play-circle fa-2x"></i>
+                            <div class="video-placeholder">
+                                <i class="fas fa-play-circle fa-3x"></i>
+                                <div class="video-title-placeholder">八段锦练习</div>
+                            </div>
+                            <video class="video-preview" muted loop>
+                                <source src="/YiDong-AI/video/八段锦.mp4" type="video/mp4">
+                            </video>
+                            <div class="video-overlay">
+                                <i class="fas fa-play-circle fa-2x"></i>
+                                <div class="video-duration">15:30</div>
+                            </div>
                         </div>
                         <div class="video-info">
                             <div class="video-title">适合中老年人的八段锦</div>
@@ -97,9 +327,19 @@
                             </div>
                         </div>
                     </div>
-                    <div class="video-item">
+                    <div class="video-item" data-video="/YiDong-AI/video/太极.mp4" data-title="每日五分钟颈椎保健操">
                         <div class="video-thumbnail">
-                            <i class="fas fa-play-circle fa-2x"></i>
+                            <div class="video-placeholder">
+                                <i class="fas fa-play-circle fa-3x"></i>
+                                <div class="video-title-placeholder">颈椎保健操</div>
+                            </div>
+                            <video class="video-preview" muted loop>
+                                <source src="/YiDong-AI/video/太极.mp4" type="video/mp4">
+                            </video>
+                            <div class="video-overlay">
+                                <i class="fas fa-play-circle fa-2x"></i>
+                                <div class="video-duration">05:45</div>
+                            </div>
                         </div>
                         <div class="video-info">
                             <div class="video-title">每日五分钟颈椎保健操</div>
@@ -208,6 +448,7 @@
                     <!-- 聊天消息将通过 chatHistory 动态加载 -->
                 </div>
                 <div class="chat-input-area">
+                    <button id="mic-button" class="mic-btn" title="按住说话"><i class="fas fa-microphone"></i></button>
                     <textarea id="chat-input" placeholder="输入您的问题..." rows="1"></textarea>
                     <button id="send-button">发送</button>
                 </div>
@@ -464,5 +705,141 @@
     </nav>
 
     <script src="/YiDong-AI/js/app.js"></script>
+
+    <!-- 视频播放器 -->
+    <div id="video-player-overlay" class="video-overlay-fullscreen">
+        <div class="video-player-container">
+            <div class="video-player-header">
+                <div class="video-title-fullscreen">太极拳入门教学</div>
+                <button id="close-video-btn" class="close-video-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <video id="fullscreen-video" controls>
+                <source src="" type="video/mp4">
+                您的浏览器不支持视频播放。
+            </video>
+        </div>
+    </div>
+
+    <!-- 运动反馈弹窗 -->
+    <div id="feedback-overlay" class="feedback-overlay">
+        <div class="feedback-container">
+            <div class="feedback-header">
+                <div class="feedback-title">
+                    <i class="fas fa-heart"></i>
+                    运动感受反馈
+                </div>
+                <div class="feedback-subtitle">请告诉我们您的运动体验</div>
+            </div>
+            
+            <div class="feedback-content">
+                <div class="feedback-question" id="exit-reason-question" style="display: none;">
+                    <label>中途退出的原因</label>
+                    <div class="feedback-options">
+                        <button class="feedback-btn" data-feeling="too-easy" data-value="太简单了">
+                            <i class="fas fa-baby"></i>
+                            <span>太简单了</span>
+                        </button>
+                        <button class="feedback-btn" data-feeling="too-difficult" data-value="太难了">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>太难了</span>
+                        </button>
+                        <button class="feedback-btn" data-feeling="boring" data-value="太枯燥了">
+                            <i class="fas fa-meh"></i>
+                            <span>太枯燥了</span>
+                        </button>
+                        <button class="feedback-btn" data-feeling="time" data-value="时间不够">
+                            <i class="fas fa-clock"></i>
+                            <span>时间不够</span>
+                        </button>
+                        <button class="feedback-btn" data-feeling="interruption" data-value="有事情打断">
+                            <i class="fas fa-phone"></i>
+                            <span>有事情打断</span>
+                        </button>
+                        <button class="feedback-btn" data-feeling="other" data-value="其他原因">
+                            <i class="fas fa-ellipsis-h"></i>
+                            <span>其他原因</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="feedback-question">
+                    <label>运动强度感受</label>
+                    <div class="feedback-options">
+                        <button class="feedback-btn" data-feeling="easy" data-value="太轻松了">
+                            <i class="fas fa-smile"></i>
+                            <span>太轻松了</span>
+                        </button>
+                        <button class="feedback-btn" data-feeling="comfortable" data-value="刚刚好">
+                            <i class="fas fa-thumbs-up"></i>
+                            <span>刚刚好</span>
+                        </button>
+                        <button class="feedback-btn" data-feeling="difficult" data-value="有点困难">
+                            <i class="fas fa-frown"></i>
+                            <span>有点困难</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="feedback-question">
+                    <label>身体感受</label>
+                    <div class="feedback-options">
+                        <button class="feedback-btn" data-feeling="energetic" data-value="精神饱满">
+                            <i class="fas fa-bolt"></i>
+                            <span>精神饱满</span>
+                        </button>
+                        <button class="feedback-btn" data-feeling="relaxed" data-value="身心放松">
+                            <i class="fas fa-leaf"></i>
+                            <span>身心放松</span>
+                        </button>
+                        <button class="feedback-btn" data-feeling="tired" data-value="有些疲惫">
+                            <i class="fas fa-bed"></i>
+                            <span>有些疲惫</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="feedback-question">
+                    <label>是否遇到困难</label>
+                    <div class="feedback-options">
+                        <button class="feedback-btn" data-feeling="no-problem" data-value="没有困难">
+                            <i class="fas fa-check-circle"></i>
+                            <span>没有困难</span>
+                        </button>
+                        <button class="feedback-btn" data-feeling="balance" data-value="平衡困难">
+                            <i class="fas fa-balance-scale"></i>
+                            <span>平衡困难</span>
+                        </button>
+                        <button class="feedback-btn" data-feeling="flexibility" data-value="柔韧性差">
+                            <i class="fas fa-child"></i>
+                            <span>柔韧性差</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="feedback-question">
+                    <label>特殊感觉（可选）</label>
+                    <div class="feedback-textarea-container">
+                        <textarea id="special-feeling" placeholder="请描述您在运动过程中的特殊感受，比如：某个动作特别舒服、某个部位有轻微疼痛、心情变化等..." rows="3" maxlength="200"></textarea>
+                        <div class="textarea-counter">
+                            <span id="char-count">0</span>/200
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="feedback-buttons">
+                <button id="skip-feedback-btn" class="feedback-skip-btn">
+                    <i class="fas fa-forward"></i>
+                    跳过反馈
+                </button>
+                <button id="submit-feedback-btn" class="feedback-submit-btn" disabled>
+                    <i class="fas fa-paper-plane"></i>
+                    提交反馈
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
 </html> 
