@@ -504,6 +504,7 @@ main {
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
+    overflow-y: auto;
 }
 
 .overlay.active {
@@ -519,6 +520,8 @@ main {
     max-width: 400px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     text-align: center;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .login-header, .survey-header {
@@ -834,6 +837,7 @@ main {
     .login-container, .survey-container {
         padding: 20px;
         margin: 20px;
+        max-height: 95vh;
     }
     
     .gender-options, .radio-options {
@@ -937,6 +941,7 @@ main {
     align-items: center;
     justify-content: center;
     z-index: 3000;
+    overflow-y: auto;
 }
 
 .feedback-overlay.active {
@@ -952,6 +957,8 @@ main {
     max-height: 80vh;
     overflow-y: auto;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .feedback-header {
@@ -1085,6 +1092,7 @@ main {
     .feedback-container {
         padding: 20px;
         margin: 20px;
+        max-height: 95vh;
     }
     
     .feedback-options {
